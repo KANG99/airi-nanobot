@@ -3,6 +3,19 @@
 - [airi项目](https://github.com/moeru-ai/airi)
 - [nanobot项目](https://github.com/HKUDS/nanobot)
 
+## airi单独使用效果与接入nanobot效果对比
+
+<table>
+  <tr>
+    <td align="center"><b>Airi 单独使用</b></td>
+    <td align="center"><b>Airi + nanobot</b></td>
+  </tr>
+  <tr>
+    <td><img src="examples/airi.gif" width="400" alt="Airi standalone"></td>
+    <td><img src="examples/airi-nanobot.gif" width="400" alt="Airi with nanobot"></td>
+  </tr>
+</table>
+
 ## 架构
 
 ```
