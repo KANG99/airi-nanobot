@@ -26,8 +26,8 @@
 
 ## 快速开始
 ```
-git clone
+git clone https://github.com/KANG99/airi-nanobot.git
 cd airi-nanobot
 
-bash setup.sh
+./setup.sh
 ```
