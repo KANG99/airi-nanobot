@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><title>Configuring nanobot for Airi...</title></head>
+<body style="font-family:system-ui;max-width:480px;margin:80px auto;text-align:center">
+  <div id="msg">⏳ Configuring nanobot provider...</div>
+  <script>
+    ;(async function () {
+      const BASE_URL = 'http://127.0.0.1:18900/v1/'
+      const API_KEY = '__API_KEY__'
+
+      var msg = document.getElementById('msg')
+
+      try {
+        // 1. Inject credentials
+        var creds = {}
+        try { creds = JSON.parse(localStorage.getItem('settings/credentials/providers') || '{}') } catch(e) {}
+        creds['openai-compatible'] = { apiKey: API_KEY, baseUrl: BASE_URL }
+        localStorage.setItem('settings/credentials/providers', JSON.stringify(creds))
+
+        var added = {}
+        try { added = JSON.parse(localStorage.getItem('settings/providers/added') || '{}') } catch(e) {}
+        added['openai-compatible'] = true
+        localStorage.setItem('settings/providers/added', JSON.stringify(added))
+
+        msg.innerHTML = '✅ Credentials configured.<br><br>🔍 Fetching models from nanobot...'
+
+        // 2. Fetch models and inject active provider + model
+        try {
+          var resp = await fetch(BASE_URL + 'models', {
+            headers: { 'Authorization': 'Bearer ' + API_KEY }
+          })
+          if (resp.ok) {
+            var data = await resp.json()
+            var models = data.data || []
+            if (models.length > 0) {
+              var modelId = models[0].id
+              localStorage.setItem('settings/consciousness/active-provider', 'openai-compatible')
+              localStorage.setItem('settings/consciousness/active-model', modelId)
+              msg.innerHTML = '✅ nanobot configured!<br><br>Model: <b>' + modelId + '</b><br>(' + models.length + ' models available)<br><br>Redirecting to Airi...'
+            } else {
+              msg.innerHTML = '⚠️ No models found from nanobot API.<br><br>Credentials saved. Please select a model manually in Airi Settings → Modules → Consciousness.<br><br>Redirecting to Airi...'
+            }
+          } else {
+            throw new Error('HTTP ' + resp.status)
+          }
+        } catch (e) {
+          msg.innerHTML = '⚠️ Could not fetch models: ' + e.message + '<br><br>Credentials saved. Please select a model manually in Airi Settings → Modules → Consciousness.<br><br>Redirecting to Airi...'
+        }
+
+        setTimeout(function() { location.href = '/' }, 2000)
+      } catch (e) {
+        msg.innerHTML = '❌ Error: ' + e.message
+      }
+    })()
+  </script>
+</body>
+</html>
